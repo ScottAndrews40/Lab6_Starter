@@ -1,7 +1,8 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();
+    this.attachShadow({mode: 'open'});
     // You'll want to attach the shadow DOM here
   }
 
@@ -100,7 +101,32 @@ class RecipeCard extends HTMLElement {
     // created in the constructor()
 
     // Part 1 Expose - TODO
+
+    
+    // Thumbnail
+    let image = document.createElement('img');
+    
+    let image_hyperlink = searchForKey(data, 'image');
+    if(image_hyperlink == undefined){
+      image_hyperlink = searchForKey(data, 'thumbnailUrl');
+    }
+    if(image_hyperlink == undefined){
+      image_hyperlink = searchForKey(data, 'contentUrl');
+    }
+    
+    image.setAttribute('src', image_hyperlink);
+    let name = searchForKey(data, 'headline');
+    
+    if(name == undefined){
+      name = searchForKey(data, 'name');
+    }
+  
+    image.setAttribute('alt', name);
+
+    card.appendChild(image);
   }
+
+
 }
 
 
