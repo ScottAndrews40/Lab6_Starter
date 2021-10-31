@@ -101,7 +101,14 @@ class RecipeCard extends HTMLElement {
     // created in the constructor()
 
     // Part 1 Expose - TODO
+    // Header
+    let header = document.createElement('p');
 
+    header.setAttribute('class', 'title');
+
+    let header_link = document.createElement('a');
+    header_link.innerHTML = name;
+    header_link.setAttribute('href', getUrl(data));
     
     // Thumbnail
     let image = document.createElement('img');
