@@ -1,3 +1,5 @@
 # Lab 6 - Starter
-Scott Andrews
-Alanna Merlan
+https://scottandrews40.github.io/Lab6_Starter/
+
+- Scott Andrews
+- Alanna Merlan
