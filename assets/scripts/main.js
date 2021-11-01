@@ -31,7 +31,8 @@ async function init() {
 }
 
 async function fetchRecipes() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => 
+  {
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
     // Once you have that data, store it in the 'recipeData' object. You can use whatever you like
@@ -43,7 +44,39 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
+    /*for(let r in recipes){
+      fetch(r)
+      .then(response => response.json())
+      .then(data => { 
+        recipeData[r] = data;
+        if (Object.keys(recipeData).length == recipes.length){
+          resolve(true);
+        }
+      })
+      .catch((error) => reject(false));
+    } not sure why this way isn't working */
+
+    recipes.forEach( r => 
+    {
+       window.fetch(r)
+      .then(response => response.json())
+      .then(data =>
+      {
+        recipeData[r] = data;
+        if(Object.keys(recipeData).length == recipes.length)
+        {
+          resolve(true);
+        }
+      })
+      .catch((error) => 
+      {
+        reject(false);
+      });
+
+    })
+
   });
+
 }
 
 function createRecipeCards() {
@@ -54,6 +87,18 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+  let bucket = document.getElementsByTagName('main')[0];
+  let count = 0;
+  //for(let r in recipes){
+  recipes.forEach(url => {
+    //we only want 3
+    if(count < 3){
+      let display = document.createElement('recipe-card');
+      display.data = recipeData[url];
+      bucket.appendChild(display);
+    }
+    ++count;
+  });
 }
 
 function bindShowMore() {

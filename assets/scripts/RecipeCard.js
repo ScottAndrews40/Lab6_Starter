@@ -101,38 +101,102 @@ class RecipeCard extends HTMLElement {
     // created in the constructor()
 
     // Part 1 Expose - TODO
-    // Header
-    let header = document.createElement('p');
-
-    header.setAttribute('class', 'title');
-
-    let header_link = document.createElement('a');
-    header_link.innerHTML = name;
-    header_link.setAttribute('href', getUrl(data));
-    
-    // Thumbnail
+    //*************************************Image
     let image = document.createElement('img');
-    
-    let image_hyperlink = searchForKey(data, 'image');
-    if(image_hyperlink == undefined){
-      image_hyperlink = searchForKey(data, 'thumbnailUrl');
+    let image_url = searchForKey(data, 'thumbnail');
+    //if we can't pull it, search with another
+    if(image_url == undefined){
+      image_url = searchForKey(data, 'thumbnailUrl');
     }
-    if(image_hyperlink == undefined){
-      image_hyperlink = searchForKey(data, 'contentUrl');
-    }
-    
-    image.setAttribute('src', image_hyperlink);
-    let name = searchForKey(data, 'headline');
-    
-    if(name == undefined){
-      name = searchForKey(data, 'name');
-    }
-  
-    image.setAttribute('alt', name);
 
+    image.setAttribute('src', image_url);
+    let imgTag = searchForKey(data, 'headline');
+    image.setAttribute('alt', imgTag);
     card.appendChild(image);
-  }
 
+    //************************************Header
+    let header = document.createElement('p');
+    header.classList.add('title');
+    let header_url = document.createElement('a');
+    header_url.innerHTML = imgTag;
+    header_url.setAttribute('href', getUrl(data));
+    header.appendChild(header_url);
+    card.appendChild(header);
+
+
+    //**************************************STARS/Rating
+    let stars = searchForKey(data, 'ratingValue');
+    let starDiv = document.createElement('div');
+    starDiv.classList.add('rating');
+    if(stars != undefined)
+    {
+      let starCnt = document.createElement('span');
+      starCnt.innerHTML = stars;
+      starDiv.append(starCnt);
+      let reviews = document.createElement('img');
+
+      if(stars < 1){
+        reviews.setAttribute('src', 'assets/images/icons/0-star.svg');
+        reviews.alt = '0 stars';
+      }
+      else if(stars >= 1 && stars < 2){
+        reviews.setAttribute('src', 'assets/images/icons/1-star.svg');
+        reviews.alt = '1 star';
+      }
+      else if(stars >= 2 && stars < 3){
+        reviews.setAttribute('src', 'assets/images/icons/2-star.svg');
+        reviews.alt = '2 stars';
+      }
+      else if(stars >= 3 && stars < 4){
+        reviews.setAttribute('src', 'assets/images/icons/3-star.svg');
+        reviews.alt = '3 stars';
+      }
+      else if(stars >= 4 && stars < 5){
+        reviews.setAttribute('src', 'assets/images/icons/4-star.svg');
+        reviews.alt = '4 stars';
+      }
+      else if(stars >= 5){
+        reviews.setAttribute('src', 'assets/images/icons/5-star.svg');
+        reviews.alt = '5 stars';
+      }
+
+      starDiv.append(reviews);
+      let cnt = document.createElement('span');
+      let cntUrl = searchForKey(data, 'ratingCount');
+      cnt.innerHTML = '(' + cntUrl + ')';
+      starDiv.append(cnt);
+    }
+    else
+    {
+      let none = document.createElement('span');
+      none.innerHTML = 'Reviews not applicable';
+      starDiv.append(none);
+    }
+    card.appendChild(starDiv);
+
+    //************************************************Organization
+    let org = document.createElement('p');
+    org.setAttribute('class', 'organization');
+    org.innerHTML = getOrganization(data);
+    card.appendChild(org);
+
+    //*********************************************Ingredients
+    let ings = document.createElement('p');
+    ings.setAttribute('class', 'ingredients');
+    let ingsUrl = searchForKey(data, 'recipeIngredient');
+    ings.innerHTML = createIngredientList(ingsUrl);
+    card.appendChild(ings);
+
+    //****************************************************Time
+    let time = document.createElement('time');
+    let timeUrl = searchForKey(data, 'totalTime');
+    time.innerHTML = convertTime(timeUrl);
+    card.appendChild(time);
+
+    //*****To the shadow realm you go*****
+    this.shadowRoot.appendChild(card);
+    this.shadowRoot.appendChild(styleElem);
+  }
 
 }
 
@@ -149,8 +213,7 @@ class RecipeCard extends HTMLElement {
  * @param {String} key the key that you are looking for in the object
  * @returns {*} the value of the found key
  */
-function searchForKey(object, key) {
-  var value;
+function searchForKey(object, key) {    let value;
   Object.keys(object).some(function (k) {
     if (k === key) {
       value = object[k];
